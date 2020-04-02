@@ -1,0 +1,140 @@
+// Created on Mon March 23 2020
+
+int l_motor = 0;
+int r_motor = 2;
+int speed = 50; 
+int speed2 = 25;
+int pause = 450;
+int pause2 = 750;
+int pause3 = 200;
+int pause4 = 50;
+int l_bump = 8;
+int r_bump = 9;
+int right_side = 2;
+int left_side = 0;
+int front = 1;
+int wall = 270;
+int wall2 = 550;
+int wall_front = 450;
+int line = 800;
+int r_reflect = 6;
+int counter = 0;
+
+void forward(){
+   motor(l_motor,speed);//go forward 
+   motor(r_motor,speed);
+}
+void backward(){
+   motor(l_motor,-speed);//go back 
+   motor(r_motor,-speed);
+}
+void r_turn(){
+   motor(l_motor,speed);//turn right
+   motor(r_motor,-speed);
+}
+void r_veer(){
+	motor(l_motor,speed);//veer right
+   motor(r_motor,speed2);
+}
+void l_turn(){
+   motor(l_motor,-speed);//turn left
+   motor(r_motor,speed);
+}
+void l_veer(){
+	motor(l_motor,speed2);//veer left
+   motor(r_motor,speed);
+}
+void wall_follow(){
+while (analog(front)>wall_front){
+	if(analog(right_side)>wall2){
+		r_veer();
+		printf("r_veer\n");
+	}
+	if(analog(right_side)<wall2){
+		l_veer();
+		printf("l_veer\n");
+	}
+}	
+}
+void turn(){
+ao();
+msleep(pause);
+backward();
+msleep(pause);
+l_turn();
+msleep(pause);
+ao();
+msleep(pause);
+}
+
+
+
+int main()
+{
+	r_turn();
+	msleep(pause);
+	ao();
+	printf("finish turn\n");
+	//Face Forward
+	
+while(analog(front)>wall){
+	if(analog(right_side)>wall){
+	r_veer();	
+	printf("r_veer\n");
+	}
+	if(analog(right_side)<wall){
+	l_veer();
+	printf("l_veer\n");
+	} // Reach Wall
+}
+	ao();
+	msleep(pause);
+	l_turn();
+	msleep(pause2);
+	ao();
+	//Face Line
+
+while(analog(r_reflect)<line){
+	forward();
+}//Reach Line
+ao();
+msleep(pause);
+
+while(analog(front)>wall){
+	while(analog(r_reflect)>line){
+		r_veer();
+	}
+	while(analog(r_reflect)<line){
+		l_veer();
+	}
+}//Reach Wall
+ao();
+msleep(pause);
+backward();
+msleep(pause);
+l_turn();
+msleep(pause); //new orientation
+forward();
+msleep(pause); //pass first blackline
+while(analog(r_reflect)<line){
+	if(analog(right_side)>wall){
+	r_veer();	
+	}
+	if(analog(right_side)<wall){
+	l_veer();
+	} // Reach Line
+}
+ao();
+msleep(pause);
+wall_follow();
+turn();
+wall_follow();
+turn();
+wall_follow();
+ao();
+msleep(pause);
+forward();
+msleep(pause4);
+
+	return 0;
+}
